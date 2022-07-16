@@ -1,0 +1,47 @@
+# 服务配置
+server:
+  mode: debug # server mode: release, debug, test，默认 release
+  healthz: true # 是否开启健康检查，如果开启会安装 /healthz 路由，默认 true
+  middlewares:  # 加载的 gin 中间件列表
+    - LoggerWithColor
+    - Options
+    - Cors
+    - Secure
+    - NoCache
+  trusted-proxies: 127.0.0.1 # 受信任的代理地址
+  bind-address: 127.0.0.1 # 绑定IP 地址，设置为 0.0.0.0 表示使用全部网络接口，默认为 127.0.0.1
+  bind-port: 8080 # 监听端口，默认为 8080
+
+
+# 数据库相关配置
+mysql:
+  host: 127.0.0.1:3306 # MySQL 机器 ip 和端口，默认 127.0.0.1:3306
+  username: root # MySQL 用户名(建议授权最小权限集)
+  password: 123456 # MySQL 用户密码
+  database: e-service # 系统所用的数据库名
+  max-idle-connections: 100 # MySQL 最大空闲连接数，默认 100
+  max-open-connections: 100 # MySQL 最大打开的连接数，默认 100
+  max-connection-life-time: 60s # 空闲连接最大存活时间，默认 60s
+  log-level: 4 # GORM log level, 1: silent, 2:error, 3:warn, 4:info
+  log-enable-color: true # 是否开启颜色输出，true:是，false:否
+
+
+# Redis 配置
+redis:
+  host: 127.0.0.1 # redis 地址，默认 127.0.0.1:6379
+  port: 6379 # redis 端口，默认 6379
+  password: 123456 # redis 密码
+
+
+# 日志相关配置
+log:
+  name: e-service # Logger的名字
+  development: true # 是否是开发模式。如果是开发模式，会对DPanicLevel进行堆栈跟踪。
+  level: debug # 日志级别，优先级从低到高依次为：debug, info, warn, error, dpanic, panic, fatal。
+  format: console # 支持的日志输出格式，目前支持console和json两种。console其实就是text格式。
+  enable-color: true # 是否开启颜色输出，true:是，false:否
+  enable-full-caller: true # 是否开启 full caller /full/path/to/package/file:line，true:是，false:否
+  disable-caller: false # 是否禁止 caller，如果开启会在日志中显示调用日志所在的文件、函数和行号
+  disable-stacktrace: false # 是否在panic及以上级别禁止打印堆栈信息
+  output-paths: stdout # 支持输出到多个输出，逗号分开。支持输出到标准输出（stdout）和文件。
+  error-output-paths: stderr # zap内部(非业务)错误日志输出路径，多个输出，逗号分开

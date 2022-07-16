@@ -1,0 +1,23 @@
+root = "."
+tmp_dir = "_output"
+
+[build]
+cmd = "make"
+bin = "_output/platforms/darwin/amd64/e-service"
+include_ext = ["go"]
+exclude_dir = ["_output", "scripts"]
+delay = 1000
+stop_on_error = true
+log = "air_errors.log"
+
+[log]
+time = true
+
+[color]
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+[misc]
+clean_on_exit = true
