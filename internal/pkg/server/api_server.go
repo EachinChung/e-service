@@ -41,7 +41,7 @@ func (s *APIServer) InstallAPIs() {
 	// 健康检查
 	if s.healthz {
 		s.GET("/healthz", func(c *gin.Context) {
-			core.WriteResponse(c, nil, map[string]string{"status": "ok"})
+			core.WriteResponse(c, map[string]string{"status": "ok"})
 		})
 	}
 }
@@ -69,7 +69,7 @@ func (s *APIServer) Setup() {
 func (s *APIServer) InstallMiddlewares() {
 	// 必要的中间件
 	s.Use(middleware.RecoveryWithHandle(func(c *gin.Context, err interface{}) {
-		core.WriteResponse(c, errors.Code(code.ErrUnknown, "服务器内部错误"), nil)
+		core.WriteResponse(c, nil, core.WithError(errors.Code(code.ErrUnknown, "服务器内部错误")))
 		c.Abort()
 	}))
 	s.Use(middleware.RequestID())

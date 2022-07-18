@@ -1,5 +1,7 @@
 package code
 
+//go:generate codegen -type=int
+
 // Common: basic errors.
 const (
 	// ErrSuccess - 200: success.
@@ -7,9 +9,6 @@ const (
 
 	// ErrUnknown - 500: 服务器内部错误.
 	ErrUnknown
-
-	// ErrBind - 400: 请求参数格式错误.
-	ErrBind
 
 	// ErrValidation - 400: 参数验证失败.
 	ErrValidation
@@ -34,13 +33,49 @@ const (
 
 	// ErrPermissionDenied - 403: 没有权限.
 	ErrPermissionDenied
+
+	// ErrFailedTokenCreation - 401: token 创建失败.
+	ErrFailedTokenCreation
+
+	// ErrExpiredToken - 401: token 已过期, 无法刷新.
+	ErrExpiredToken
+
+	// ErrMissingExpField - 400: 缺少 exp 字段.
+	ErrMissingExpField
+
+	// ErrWrongFormatOfExp - 400: exp 必须是 float64 格式.
+	ErrWrongFormatOfExp
+
+	// ErrEmptyToken - 401: 没有携带 token.
+	ErrEmptyToken
+
+	// ErrInvalidSigningAlgorithm - 400: 无效签名算法.
+	ErrInvalidSigningAlgorithm
+
+	// ErrFailedAuthentication - 401: 用户名或密码不正确.
+	ErrFailedAuthentication
 )
 
-// common: 网络相关错误
+// common: database errors.
 const (
-	// ErrNetworkRequest - 500: 网络请求错误.
-	ErrNetworkRequest int = iota + 100201
+	// ErrDatabase - 500: 数据库错误.
+	ErrDatabase int = iota + 100201
+)
 
-	// ErrNetworkTimeOut - 500: 网络请求超时.
-	ErrNetworkTimeOut
+// common: 用户相关错误
+const (
+	// ErrUserAlreadyExist - 400: 用户已存在.
+	ErrUserAlreadyExist int = iota + 100301
+
+	// ErrUserNotExist - 404: 用户不存在.
+	ErrUserNotExist
+
+	// ErrUsernameAlreadyExist - 400: 用户名已存在.
+	ErrUsernameAlreadyExist
+
+	// ErrPhoneAlreadyExist - 400: 该手机号码已注册.
+	ErrPhoneAlreadyExist
+
+	// ErrEmailAlreadyExist - 400: 该邮箱已注册.
+	ErrEmailAlreadyExist
 )

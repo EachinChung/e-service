@@ -17,8 +17,6 @@ var (
 
 // GetConfigIns 基于给定的命令行或配置文件选项创建一个配置实例。
 func GetConfigIns(opts *options.Options) *Config {
-	once.Do(func() {
-		cfg = &Config{opts}
-	})
+	once.Do(func() { cfg = &Config{opts} })
 	return cfg
 }

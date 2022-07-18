@@ -5,9 +5,11 @@
 *.so
 *.dylib
 *.log
+_output/
 
 # Test binary, built with `go test -c`
 *.test
+*.http
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
@@ -16,8 +18,8 @@
 tmp
 
 # Custom
-.idea
-.vscode
+.idea/
+.vscode/
 
 # MacOS
 .DS_Store

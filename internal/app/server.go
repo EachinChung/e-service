@@ -6,7 +6,10 @@ import (
 	"github.com/eachinchung/log"
 
 	"github.com/eachinchung/e-service/internal/app/config"
+	"github.com/eachinchung/e-service/internal/app/store"
+	"github.com/eachinchung/e-service/internal/app/store/mysql"
 	"github.com/eachinchung/e-service/internal/pkg/server"
+	"github.com/eachinchung/e-service/internal/pkg/validator"
 )
 
 type apiServer struct {
@@ -22,11 +25,15 @@ func createAPIServer(cfg *config.Config) (*apiServer, error) {
 	gs := shutdown.New()
 	gs.AddShutdownManager(managers.NewPosixSignalManager())
 
-	//storeIns, err := mysql.GetMySQLFactoryOr(cfg.MySQLOptions)
-	//if err != nil {
-	//	log.Fatalf("获取 mysql 工厂失败, error: %v", err)
-	//}
-	//store.SetClient(storeIns)
+	if err := validator.InitValidator(); err != nil {
+		return nil, err
+	}
+
+	storeIns, err := mysql.GetMySQLFactoryOr(cfg.MySQLOptions)
+	if err != nil {
+		log.Fatalf("获取 mysql 工厂失败, error: %v", err)
+	}
+	store.SetClient(storeIns)
 
 	genericConfig, err := buildGenericConfig(cfg)
 	if err != nil {
@@ -58,9 +65,9 @@ func (s *apiServer) PrepareRun() preparedAPIServer {
 	initRouter(s.genericAPIServer.Engine)
 
 	s.gs.AddShutdownCallback(shutdown.Func(func(string) error {
-		//if mysqlStore, err := mysql.GetMySQLFactoryOr(nil); err == nil {
-		//	_ = mysqlStore.Close()
-		//}
+		if mysqlStore, err := mysql.GetMySQLFactoryOr(nil); err == nil {
+			_ = mysqlStore.Close()
+		}
 
 		s.genericAPIServer.Close()
 		return nil

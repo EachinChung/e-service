@@ -15,37 +15,39 @@ type Options struct {
 	GenericServerRunOptions *options.ServerRunOptions `json:"server"   mapstructure:"server"`
 	MySQLOptions            *baseoptions.MySQLOptions `json:"mysql"    mapstructure:"mysql"`
 	RedisOptions            *baseoptions.RedisOptions `json:"redis"    mapstructure:"redis"`
-	Log                     *log.Options              `json:"log"      mapstructure:"log"`
+	JWTOptions              *baseoptions.JWTOptions   `json:"jwt"      mapstructure:"jwt"`
+	LogOptions              *log.Options              `json:"log"      mapstructure:"log"`
 }
 
 func (o Options) Flags() (fss flag.NamedFlagSets) {
-	//o.GenericServerRunOptions.AddFlags(fss.FlagSet("server"))
+	o.GenericServerRunOptions.AddFlags(fss.FlagSet("server"))
 	o.MySQLOptions.AddFlags(fss.FlagSet("mysql"))
 	o.RedisOptions.AddFlags(fss.FlagSet("rides"))
-	o.Log.AddFlags(fss.FlagSet("logs"))
-	//o.Secret.AddFlags(fss.FlagSet("secret"))
+	o.JWTOptions.AddFlags(fss.FlagSet("jwt"))
+	o.LogOptions.AddFlags(fss.FlagSet("logs"))
+
 	return fss
 }
 
 func (o *Options) Validate() []error {
 	var errs []error
 
-	//errs = append(errs, o.GenericServerRunOptions.Validate()...)
+	errs = append(errs, o.GenericServerRunOptions.Validate()...)
 	errs = append(errs, o.MySQLOptions.Validate()...)
 	errs = append(errs, o.RedisOptions.Validate()...)
-	errs = append(errs, o.Log.Validate()...)
-	//errs = append(errs, o.Secret.Validate()...)
+	errs = append(errs, o.JWTOptions.Validate()...)
+	errs = append(errs, o.LogOptions.Validate()...)
 
 	return errs
 }
 
 func NewOptions() *Options {
 	return &Options{
-		//GenericServerRunOptions: options.NewServerRunOptions(),
-		MySQLOptions: baseoptions.NewMySQLOptions(),
-		RedisOptions: baseoptions.NewRedisOptions(),
-		Log:          log.NewOptions(),
-		//Secret:                  options.NewSecretOptions(),
+		GenericServerRunOptions: options.NewServerRunOptions(),
+		MySQLOptions:            baseoptions.NewMySQLOptions(),
+		RedisOptions:            baseoptions.NewRedisOptions(),
+		JWTOptions:              baseoptions.NewJwtOptions(),
+		LogOptions:              log.NewOptions(),
 	}
 }
 

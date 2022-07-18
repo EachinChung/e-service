@@ -2,9 +2,10 @@ package app
 
 import (
 	"github.com/eachinchung/component-base/app"
+	"github.com/eachinchung/log"
+
 	"github.com/eachinchung/e-service/internal/app/config"
 	"github.com/eachinchung/e-service/internal/app/options"
-	"github.com/eachinchung/log"
 )
 
 const commandDesc = `Eachin Service 包含了 Eachin 提供的所有云服务。`
@@ -24,7 +25,7 @@ func NewApplication(basename string) *app.Application {
 
 func run(opts *options.Options) app.RunFunc {
 	return func(basename string) error {
-		log.Init(opts.Log)
+		log.Init(opts.LogOptions)
 		defer log.Flush()
 
 		cfg := config.GetConfigIns(opts)
