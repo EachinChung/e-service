@@ -129,8 +129,6 @@ func payloadFunc() func(data interface{}) auth.MapClaims {
 
 func unauthorized() func(c *gin.Context, _ int, err error) {
 	return func(c *gin.Context, _ int, err error) {
-		c.Abort()
-
 		var errCode int
 
 		switch err {
@@ -154,6 +152,6 @@ func unauthorized() func(c *gin.Context, _ int, err error) {
 			errCode = code.ErrEmptyToken
 		}
 
-		core.WriteResponse(c, nil, core.WithError(errors.Code(errCode, err.Error())))
+		core.WriteResponse(c, nil, core.WithError(errors.Code(errCode, err.Error())), core.WithAbort())
 	}
 }
