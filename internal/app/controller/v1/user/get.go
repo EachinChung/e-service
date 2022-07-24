@@ -1,15 +1,16 @@
 package user
 
 import (
-	"github.com/eachinchung/e-service/internal/app/store/model"
-	"github.com/eachinchung/e-service/internal/pkg/casbin"
-	"github.com/eachinchung/log"
 	"github.com/gin-gonic/gin"
 
 	"github.com/eachinchung/component-base/core"
+	"github.com/eachinchung/errors"
+	"github.com/eachinchung/log"
+
+	"github.com/eachinchung/e-service/internal/app/store/model"
+	"github.com/eachinchung/e-service/internal/pkg/casbin"
 	"github.com/eachinchung/e-service/internal/pkg/code"
 	"github.com/eachinchung/e-service/internal/pkg/validator"
-	"github.com/eachinchung/errors"
 )
 
 type getUri struct {

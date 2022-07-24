@@ -3,7 +3,6 @@ package casbin
 import (
 	"context"
 	"fmt"
-
 	"sync"
 
 	"github.com/casbin/casbin/v2"
