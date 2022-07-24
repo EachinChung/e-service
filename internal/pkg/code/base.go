@@ -78,4 +78,7 @@ const (
 
 	// ErrEmailAlreadyExist - 400: 该邮箱已注册.
 	ErrEmailAlreadyExist
+
+	// ErrUserStatusIsAbnormal - 403: 用户状态异常.
+	ErrUserStatusIsAbnormal
 )

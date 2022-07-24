@@ -1,4 +1,4 @@
-package mysql
+package postgres
 
 import (
 	"context"
@@ -48,7 +48,7 @@ func (u user) Get(ctx context.Context, db *gorm.DB, key interface{}, opts ...opt
 	o := &options.Option{
 		Unscoped: false,
 		Where: options.Where{
-			Query: "user_id = ?",
+			Query: "username = ?",
 			Args:  []interface{}{key},
 		},
 	}

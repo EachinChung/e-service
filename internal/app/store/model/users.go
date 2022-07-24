@@ -3,19 +3,20 @@ package model
 import (
 	"time"
 
+	"github.com/gin-gonic/gin"
+
 	"gorm.io/gorm"
 
 	"github.com/eachinchung/component-base/auth"
-	"github.com/eachinchung/component-base/utils/id"
 	"github.com/eachinchung/errors"
 )
+
+const ctxKey = "USER"
 
 // Users 用户表
 type Users struct {
 	ID           uint           `gorm:"primaryKey;column:id" json:"-" redis:"id"`
-	UserID       uint64         `gorm:"column:user_id" json:"user_id" redis:"user_id"`          // 用户ID
 	Phone        string         `gorm:"column:phone" json:"phone" redis:"phone"`                // 手机号
-	Email        *string        `gorm:"column:email" json:"email,omitempty" redis:"email"`      // 邮箱
 	Username     string         `gorm:"column:username" json:"username" redis:"username"`       // 用户名
 	PasswordHash string         `gorm:"column:password_hash" json:"-" redis:"password_hash"`    // 密码
 	Avatar       *string        `gorm:"column:avatar" json:"avatar,omitempty" redis:"avatar"`   // 头像
@@ -34,7 +35,29 @@ func (u *Users) ComparePasswordHash(pwd string) error {
 	return nil
 }
 
-func (u *Users) BeforeCreate(_ *gorm.DB) (err error) {
-	u.UserID = id.GenUint64ID()
-	return
+func (u *Users) Map() map[string]interface{} {
+	return map[string]interface{}{
+		"id":            u.ID,
+		"phone":         u.Phone,
+		"username":      u.Username,
+		"password_hash": u.PasswordHash,
+		"avatar":        u.Avatar,
+		"state":         u.State,
+		"created_at":    u.CreatedAt,
+		"updated_at":    u.UpdatedAt,
+		"deleted_at":    u.DeletedAt,
+	}
+}
+
+func (u *Users) SaveToContext(c *gin.Context) {
+	c.Set(ctxKey, u)
+}
+
+func ExtractUsersFromContext(c *gin.Context) *Users {
+	u, exists := c.Get(ctxKey)
+	if !exists {
+		return nil
+	}
+
+	return u.(*Users)
 }

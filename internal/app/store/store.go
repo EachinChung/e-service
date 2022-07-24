@@ -16,6 +16,7 @@ type Store interface {
 	Close() error
 
 	User() UserStore
+	SuperUsers() SuperUsersStore
 }
 
 // Client 返回 store 客户端实例。

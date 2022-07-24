@@ -2,7 +2,6 @@ package app
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -70,8 +69,6 @@ func authenticator() func(ctx *gin.Context) (interface{}, error) {
 		switch {
 		case verification.Phone(login.Username):
 			user, err = userStore.Get(c, db, login.Username, options.WithQuery("phone = ?"))
-		case verification.Email(login.Username):
-			user, err = userStore.Get(c, db, login.Username, options.WithQuery("email = ?"))
 		default:
 			user, err = userStore.Get(c, db, login.Username, options.WithQuery("username = ?"))
 		}
@@ -123,7 +120,7 @@ func payloadFunc() func(data interface{}) auth.MapClaims {
 			"aud": APIServerAudience,
 		}
 		if u, ok := data.(*model.Users); ok {
-			claims["sub"] = strconv.FormatUint(u.UserID, 10)
+			claims["sub"] = u.Username
 		}
 
 		return claims

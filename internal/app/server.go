@@ -7,7 +7,8 @@ import (
 
 	"github.com/eachinchung/e-service/internal/app/config"
 	"github.com/eachinchung/e-service/internal/app/store"
-	"github.com/eachinchung/e-service/internal/app/store/mysql"
+	"github.com/eachinchung/e-service/internal/app/store/postgres"
+	"github.com/eachinchung/e-service/internal/pkg/casbin"
 	"github.com/eachinchung/e-service/internal/pkg/server"
 	"github.com/eachinchung/e-service/internal/pkg/validator"
 )
@@ -29,11 +30,15 @@ func createAPIServer(cfg *config.Config) (*apiServer, error) {
 		return nil, err
 	}
 
-	storeIns, err := mysql.GetMySQLFactoryOr(cfg.MySQLOptions)
+	storeIns, err := postgres.GetPostgresFactoryOr(cfg.PostgresOptions)
 	if err != nil {
-		log.Fatalf("获取 mysql 工厂失败, error: %v", err)
+		log.Fatalf("获取 postgres 工厂失败, error: %v", err)
 	}
 	store.SetClient(storeIns)
+
+	if _, err := casbin.GetEnforcerOr(cfg.CasbinOptions); err != nil {
+		log.Fatalf("获取 casbin 失败, error: %v", err)
+	}
 
 	genericConfig, err := buildGenericConfig(cfg)
 	if err != nil {
@@ -65,7 +70,7 @@ func (s *apiServer) PrepareRun() preparedAPIServer {
 	initRouter(s.genericAPIServer.Engine)
 
 	s.gs.AddShutdownCallback(shutdown.Func(func(string) error {
-		if mysqlStore, err := mysql.GetMySQLFactoryOr(nil); err == nil {
+		if mysqlStore, err := postgres.GetPostgresFactoryOr(nil); err == nil {
 			_ = mysqlStore.Close()
 		}
 

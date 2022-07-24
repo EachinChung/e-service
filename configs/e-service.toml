@@ -1,7 +1,7 @@
 [server]
 mode = "debug"
 healthz = true
-middlewares = ["LoggerWithColor", "Options", "Cors", "Secure", "NoCache"]
+middlewares = ["LoggerWithColor", "Cors", "Secure", "NoCache"]
 trusted-proxies = "127.0.0.1"
 bind-address = "127.0.0.1"
 bind-port = 8080
@@ -12,11 +12,11 @@ key = "iqiLZuFgP9Ofc23egs4FSH57pyJ7"
 timeout = "1h"
 max-refresh = "360h"
 
-[mysql]
-host = "127.0.0.1:3306"
-username = "root"
+[postgres]
+host = "127.0.0.1"
+username = "postgres"
 password = 123456
-database = "e-service"
+database = "service"
 max-idle-connections = 100
 max-open-connections = 100
 max-connection-life-time = "60s"

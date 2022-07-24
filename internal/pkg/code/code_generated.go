@@ -25,4 +25,5 @@ func init() {
 	register(ErrUsernameAlreadyExist, 400, "用户名已存在")
 	register(ErrPhoneAlreadyExist, 400, "该手机号码已注册")
 	register(ErrEmailAlreadyExist, 400, "该邮箱已注册")
+	register(ErrUserStatusIsAbnormal, 403, "用户状态异常")
 }

@@ -1,10 +1,13 @@
 package validator
 
 import (
+	"context"
 	"errors"
 	"reflect"
 	"regexp"
 	"strings"
+
+	"github.com/eachinchung/e-service/internal/pkg/casbin"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/zh"
@@ -18,9 +21,10 @@ import (
 var Trans ut.Translator
 
 const (
-	password = "password"
-	phone    = "phone"
-	username = "username"
+	password  = "password"
+	phone     = "phone"
+	username  = "username"
+	isNotRole = "is_not_role"
 )
 
 func InitValidator() error {
@@ -42,6 +46,9 @@ func InitValidator() error {
 		if err := v.RegisterValidation(username, usernameValidation); err != nil {
 			return err
 		}
+		if err := v.RegisterValidation(isNotRole, isNotRoleValidation); err != nil {
+			return err
+		}
 
 		zhT := zh.New()
 		uni := ut.New(zhT, zhT)
@@ -57,7 +64,7 @@ func InitValidator() error {
 		if err := v.RegisterTranslation(
 			phone,
 			Trans,
-			registerTranslator(phone, "{0}必须为合法的中国大陆手机号码"),
+			registerTranslator(phone, "必须为合法的中国大陆手机号码"),
 			translate,
 		); err != nil {
 			return err
@@ -65,7 +72,7 @@ func InitValidator() error {
 		if err := v.RegisterTranslation(
 			password,
 			Trans,
-			registerTranslator(password, "{0}必须存在特殊字符、大小写字母和数字"),
+			registerTranslator(password, "密码必须存在特殊字符、大小写字母和数字"),
 			translate,
 		); err != nil {
 			return err
@@ -73,7 +80,15 @@ func InitValidator() error {
 		if err := v.RegisterTranslation(
 			username,
 			Trans,
-			registerTranslator(username, "{0}不能以数字开头，可以使用6-20位字母、数字、下划线或减号组合而成"),
+			registerTranslator(username, "用户名不能以数字开头，可以使用6-20位字母、数字、下划线或减号组合而成"),
+			translate,
+		); err != nil {
+			return err
+		}
+		if err := v.RegisterTranslation(
+			isNotRole,
+			Trans,
+			registerTranslator(isNotRole, "用户名不能为敏感名称"),
 			translate,
 		); err != nil {
 			return err
@@ -136,4 +151,11 @@ func usernameValidation(fl validator.FieldLevel) bool {
 	val := fl.Field().String()
 	rgx := regexp.MustCompile(`^[a-zA-Z][a-zA-Z\d_-]{5,19}$`)
 	return rgx.MatchString(val)
+}
+
+// isNotRoleValidation 角色名校验，用户名不能为 rbac 的角色名
+func isNotRoleValidation(fl validator.FieldLevel) bool {
+	val := fl.Field().String()
+	permissions := casbin.GetPermissionsForUser(context.Background(), val)
+	return len(permissions) == 0
 }

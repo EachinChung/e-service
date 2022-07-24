@@ -17,7 +17,7 @@ import (
 // UserSrv defines functions used to handle user request.
 type UserSrv interface {
 	Create(ctx context.Context, user *model.Users) error
-	GetByUserID(ctx context.Context, id uint64) (*model.Users, error)
+	GetByUsername(ctx context.Context, username string) (*model.Users, error)
 }
 
 type userService struct {
@@ -37,10 +37,6 @@ func (u userService) Create(ctx context.Context, user *model.Users) error {
 		return errors.Code(code.ErrPhoneAlreadyExist, "phone already exists")
 	}
 
-	if _, err := u.store.User().Get(ctx, db, user.Email, options.WithQuery("email = ?")); err == nil {
-		return errors.Code(code.ErrEmailAlreadyExist, "email already exists")
-	}
-
 	if _, err := u.store.User().Get(ctx, db, user.Username, options.WithQuery("username = ?")); err == nil {
 		return errors.Code(code.ErrUsernameAlreadyExist, "username already exists")
 	}
@@ -56,10 +52,10 @@ func (u userService) Create(ctx context.Context, user *model.Users) error {
 	return nil
 }
 
-func (u userService) GetByUserID(ctx context.Context, userID uint64) (*model.Users, error) {
+func (u userService) GetByUsername(ctx context.Context, username string) (*model.Users, error) {
 	db := u.store.DB()
 
-	user, err := u.store.User().Get(ctx, db, userID)
+	user, err := u.store.User().Get(ctx, db, username)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.Code(code.ErrUserNotExist, err.Error())

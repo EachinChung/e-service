@@ -1,4 +1,4 @@
-package mysql
+package postgres
 
 import (
 	"fmt"
@@ -33,27 +33,31 @@ func (ds *datastore) User() store.UserStore {
 	return newUser()
 }
 
+func (ds *datastore) SuperUsers() store.SuperUsersStore {
+	return newSuperUser()
+}
+
 var (
-	mysqlFactory store.Store
-	once         sync.Once
+	factory store.Store
+	once    sync.Once
 )
 
-// GetMySQLFactoryOr 使用给定的配置创建 mysql 工厂。
-func GetMySQLFactoryOr(opts *options.MySQLOptions) (store.Store, error) {
-	if opts == nil && mysqlFactory == nil {
-		return nil, fmt.Errorf("获取 mysql 工厂失败")
+// GetPostgresFactoryOr 使用给定的配置创建 postgres 工厂。
+func GetPostgresFactoryOr(opts *options.PostgresOptions) (store.Store, error) {
+	if opts == nil && factory == nil {
+		return nil, fmt.Errorf("获取 postgres 工厂失败")
 	}
 
 	var err error
 	var dbIns *gorm.DB
 	once.Do(func() {
 		dbIns, err = opts.NewClient()
-		mysqlFactory = &datastore{dbIns}
+		factory = &datastore{dbIns}
 	})
 
-	if mysqlFactory == nil || err != nil {
-		return nil, fmt.Errorf("获取 mysql 工厂失败, mysqlFactory: %+v, error: %w", mysqlFactory, err)
+	if factory == nil || err != nil {
+		return nil, fmt.Errorf("获取 postgres 工厂失败, factory: %+v, error: %w", factory, err)
 	}
 
-	return mysqlFactory, nil
+	return factory, nil
 }

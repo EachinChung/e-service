@@ -12,18 +12,20 @@ import (
 )
 
 type Options struct {
-	GenericServerRunOptions *options.ServerRunOptions `json:"server"   mapstructure:"server"`
-	MySQLOptions            *baseoptions.MySQLOptions `json:"mysql"    mapstructure:"mysql"`
-	RedisOptions            *baseoptions.RedisOptions `json:"redis"    mapstructure:"redis"`
-	JWTOptions              *baseoptions.JWTOptions   `json:"jwt"      mapstructure:"jwt"`
-	LogOptions              *log.Options              `json:"log"      mapstructure:"log"`
+	GenericServerRunOptions *options.ServerRunOptions    `json:"server"      mapstructure:"server"`
+	PostgresOptions         *baseoptions.PostgresOptions `json:"postgres"    mapstructure:"postgres"`
+	RedisOptions            *baseoptions.RedisOptions    `json:"redis"       mapstructure:"redis"`
+	JWTOptions              *baseoptions.JWTOptions      `json:"jwt"         mapstructure:"jwt"`
+	CasbinOptions           *baseoptions.CasbinOptions   `json:"casbin"      mapstructure:"casbin"`
+	LogOptions              *log.Options                 `json:"log"         mapstructure:"log"`
 }
 
 func (o Options) Flags() (fss flag.NamedFlagSets) {
 	o.GenericServerRunOptions.AddFlags(fss.FlagSet("server"))
-	o.MySQLOptions.AddFlags(fss.FlagSet("mysql"))
+	o.PostgresOptions.AddFlags(fss.FlagSet("postgres"))
 	o.RedisOptions.AddFlags(fss.FlagSet("rides"))
 	o.JWTOptions.AddFlags(fss.FlagSet("jwt"))
+	o.CasbinOptions.AddFlags(fss.FlagSet("casbin"))
 	o.LogOptions.AddFlags(fss.FlagSet("logs"))
 
 	return fss
@@ -33,9 +35,10 @@ func (o *Options) Validate() []error {
 	var errs []error
 
 	errs = append(errs, o.GenericServerRunOptions.Validate()...)
-	errs = append(errs, o.MySQLOptions.Validate()...)
+	errs = append(errs, o.PostgresOptions.Validate()...)
 	errs = append(errs, o.RedisOptions.Validate()...)
 	errs = append(errs, o.JWTOptions.Validate()...)
+	errs = append(errs, o.CasbinOptions.Validate()...)
 	errs = append(errs, o.LogOptions.Validate()...)
 
 	return errs
@@ -44,9 +47,10 @@ func (o *Options) Validate() []error {
 func NewOptions() *Options {
 	return &Options{
 		GenericServerRunOptions: options.NewServerRunOptions(),
-		MySQLOptions:            baseoptions.NewMySQLOptions(),
+		PostgresOptions:         baseoptions.NewPostgresOptions(),
 		RedisOptions:            baseoptions.NewRedisOptions(),
-		JWTOptions:              baseoptions.NewJwtOptions(),
+		JWTOptions:              baseoptions.NewJWTOptions(),
+		CasbinOptions:           baseoptions.NewCasbinOptions(),
 		LogOptions:              log.NewOptions(),
 	}
 }

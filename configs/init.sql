@@ -1,29 +1,28 @@
-create database if not exists `e-service`;
+create database service;
 
-drop table if exists `e-service`.users;
-create table `e-service`.users
+drop table if exists users;
+create table users
 (
-    id            int unsigned primary key auto_increment,
-    user_id       bigint unsigned                            not null comment '用户ID',
+    id            serial primary key,
+    username      varchar(32) unique       not null,
+    phone         char(11) unique          not null,
 
-    phone         char(11)                                   not null comment '手机号',
-    email         varchar(64)                                null comment '邮箱',
+    password_hash char(60)                 not null,
+    avatar        char(55)                 null,
+    state         smallint                 not null default 0,
 
-    username      varchar(32) binary                         not null comment '用户名',
-    password_hash char(60)                                   not null comment '密码',
+    created_at    timestamp with time zone not null default now(),
+    updated_at    timestamp with time zone not null default ('now'::text)::timestamp(0) with time zone,
+    deleted_at    timestamp with time zone null
+);
 
-    avatar        char(55)                                   null comment '头像',
+create index users_deleted_at_key on users (deleted_at);
 
-    state         tinyint unsigned default 0                 not null comment '状态',
-
-    created_at    datetime         default CURRENT_TIMESTAMP not null comment '创建时间',
-    updated_at    datetime         default CURRENT_TIMESTAMP not null comment '更新时间',
-    deleted_at    datetime         default null comment '删除时间',
-
-    unique index (user_id),
-    unique index (phone),
-    unique index (email),
-
-    index (deleted_at),
-    index (created_at)
-) comment '用户表';
+drop table if exists super_users;
+create table super_users
+(
+    id         serial primary key,
+    username   varchar(32) unique       not null,
+    created_at timestamp with time zone not null default now(),
+    foreign key (username) references users (username) on delete cascade on update cascade
+);

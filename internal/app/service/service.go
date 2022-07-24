@@ -5,6 +5,7 @@ import "github.com/eachinchung/e-service/internal/app/store"
 // Service defines functions used to return resource interface.
 type Service interface {
 	Users() UserSrv
+	SuperUser() SuperUsersSrv
 }
 
 type service struct {
@@ -20,4 +21,8 @@ func NewService(store store.Store) Service {
 
 func (s *service) Users() UserSrv {
 	return newUsers(s)
+}
+
+func (s *service) SuperUser() SuperUsersSrv {
+	return newSuperUsers(s)
 }

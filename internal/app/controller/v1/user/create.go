@@ -15,14 +15,14 @@ import (
 	"github.com/eachinchung/e-service/internal/pkg/validator"
 )
 
-type CreateBody struct {
-	Phone    string `json:"phone" binding:"required,len=11,phone"`             // 手机号
-	Username string `json:"username" binding:"required,min=6,max=20,username"` // 用户名
-	Password string `json:"password" binding:"required,min=6,password"`        // 密码
+type createBody struct {
+	Phone    string `json:"phone" binding:"required,len=11,phone"`                         // 手机号
+	Username string `json:"username" binding:"required,min=6,max=20,username,is_not_role"` // 用户名
+	Password string `json:"password" binding:"required,min=6,password"`                    // 密码
 }
 
 func (u *Controller) Create(c *gin.Context) {
-	body := &CreateBody{}
+	body := &createBody{}
 	if err := c.ShouldBindJSON(body); err != nil {
 		core.WriteResponse(
 			c,
@@ -39,7 +39,12 @@ func (u *Controller) Create(c *gin.Context) {
 		Username:     body.Username,
 		PasswordHash: pwdHash,
 	}); err != nil {
-		log.Errorf("create user error: %+v", err)
+		if !errors.IsCode(err, code.ErrEmailAlreadyExist) &&
+			!errors.IsCode(err, code.ErrPhoneAlreadyExist) &&
+			!errors.IsCode(err, code.ErrUsernameAlreadyExist) {
+			log.Errorf("create user error: %+v", err)
+		}
+
 		core.WriteResponse(c, nil, core.WithError(err))
 		return
 	}
