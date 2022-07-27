@@ -68,7 +68,7 @@ func (s *APIServer) Setup() {
 // InstallMiddlewares 安装中间件
 func (s *APIServer) InstallMiddlewares() {
 	// 必要的中间件
-	s.Use(middleware.RecoveryWithHandle(func(c *gin.Context, err interface{}) {
+	s.Use(middleware.RecoveryWithHandle(func(c *gin.Context, err any) {
 		core.WriteResponse(c, nil, core.WithError(errors.Code(code.ErrUnknown, "服务器内部错误")))
 		c.Abort()
 	}))

@@ -23,7 +23,7 @@ var Trans ut.Translator
 const (
 	password  = "password"
 	phone     = "phone"
-	username  = "username"
+	eid       = "eid"
 	isNotRole = "is_not_role"
 )
 
@@ -43,7 +43,7 @@ func InitValidator() error {
 		if err := v.RegisterValidation(password, passwordValidation); err != nil {
 			return err
 		}
-		if err := v.RegisterValidation(username, usernameValidation); err != nil {
+		if err := v.RegisterValidation(eid, eidValidation); err != nil {
 			return err
 		}
 		if err := v.RegisterValidation(isNotRole, isNotRoleValidation); err != nil {
@@ -78,9 +78,9 @@ func InitValidator() error {
 			return err
 		}
 		if err := v.RegisterTranslation(
-			username,
+			eid,
 			Trans,
-			registerTranslator(username, "用户名不能以数字开头，可以使用6-20位字母、数字、下划线或减号组合而成"),
+			registerTranslator(eid, "用户名不能以数字开头，可以使用6-20位字母、数字、下划线或减号组合而成"),
 			translate,
 		); err != nil {
 			return err
@@ -146,8 +146,8 @@ func phoneValidation(fl validator.FieldLevel) bool {
 	return verification.Phone(val)
 }
 
-// usernameValidation 用户名校验
-func usernameValidation(fl validator.FieldLevel) bool {
+// eidValidation eid 校验
+func eidValidation(fl validator.FieldLevel) bool {
 	val := fl.Field().String()
 	rgx := regexp.MustCompile(`^[a-zA-Z][a-zA-Z\d_-]{5,19}$`)
 	return rgx.MatchString(val)

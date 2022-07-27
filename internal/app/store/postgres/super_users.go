@@ -18,9 +18,9 @@ func newSuperUser() *superUser {
 
 var _ store.SuperUsersStore = &superUser{}
 
-func (s superUser) Exist(ctx context.Context, db *gorm.DB, username string) (bool, error) {
+func (s superUser) Exist(ctx context.Context, db *gorm.DB, eid string) (bool, error) {
 	var count int64
-	if err := db.Model(&model.SuperUsers{}).Where("username = ?", username).Count(&count).Error; err != nil {
+	if err := db.Model(&model.SuperUsers{}).Where("eid = ?", eid).Count(&count).Error; err != nil {
 		return false, errors.Wrap(err, "failed to check super user")
 	}
 	return count > 0, nil

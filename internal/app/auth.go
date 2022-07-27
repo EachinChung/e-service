@@ -53,8 +53,8 @@ func newJWTAuth() *auth.GinJWTMiddleware {
 	return jwtMiddleware
 }
 
-func authenticator() func(ctx *gin.Context) (interface{}, error) {
-	return func(c *gin.Context) (interface{}, error) {
+func authenticator() func(ctx *gin.Context) (any, error) {
+	return func(c *gin.Context) (any, error) {
 		var user *model.Users
 		var err error
 
@@ -70,7 +70,7 @@ func authenticator() func(ctx *gin.Context) (interface{}, error) {
 		case verification.Phone(login.Username):
 			user, err = userStore.Get(c, db, login.Username, options.WithQuery("phone = ?"))
 		default:
-			user, err = userStore.Get(c, db, login.Username, options.WithQuery("username = ?"))
+			user, err = userStore.Get(c, db, login.Username, options.WithQuery("eid = ?"))
 		}
 
 		if err != nil {
@@ -113,14 +113,14 @@ func loginResponse() func(c *gin.Context, _ int, token string, expire time.Time)
 	}
 }
 
-func payloadFunc() func(data interface{}) auth.MapClaims {
-	return func(data interface{}) auth.MapClaims {
+func payloadFunc() func(data any) auth.MapClaims {
+	return func(data any) auth.MapClaims {
 		claims := auth.MapClaims{
 			"iss": APIServerIssuer,
 			"aud": APIServerAudience,
 		}
 		if u, ok := data.(*model.Users); ok {
-			claims["sub"] = u.Username
+			claims["sub"] = u.EID
 		}
 
 		return claims

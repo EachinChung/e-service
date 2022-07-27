@@ -6,6 +6,7 @@ import (
 	"github.com/eachinchung/log"
 
 	"github.com/eachinchung/e-service/internal/app/config"
+	"github.com/eachinchung/e-service/internal/app/storage"
 	"github.com/eachinchung/e-service/internal/app/store"
 	"github.com/eachinchung/e-service/internal/app/store/postgres"
 	"github.com/eachinchung/e-service/internal/pkg/casbin"
@@ -35,6 +36,11 @@ func createAPIServer(cfg *config.Config) (*apiServer, error) {
 		log.Fatalf("获取 postgres 工厂失败, error: %v", err)
 	}
 	store.SetClient(storeIns)
+
+	_, err = storage.GetRedisClientOr(cfg.RedisOptions)
+	if err != nil {
+		log.Fatalf("获取 redis 客户端失败, error: %v", err)
+	}
 
 	if _, err := casbin.GetEnforcerOr(cfg.CasbinOptions); err != nil {
 		log.Fatalf("获取 casbin 失败, error: %v", err)

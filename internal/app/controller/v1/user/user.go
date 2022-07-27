@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/eachinchung/e-service/internal/app/service"
+	"github.com/eachinchung/e-service/internal/app/storage"
 	"github.com/eachinchung/e-service/internal/app/store"
 )
 
@@ -11,8 +12,8 @@ type Controller struct {
 }
 
 // NewController creates a user handler.
-func NewController(store store.Store) *Controller {
+func NewController(store store.Store, storage storage.Storage) *Controller {
 	return &Controller{
-		srv: service.NewService(store),
+		srv: service.NewService(store, storage),
 	}
 }

@@ -16,6 +16,7 @@ import (
 	"github.com/eachinchung/log"
 
 	"github.com/eachinchung/e-service/internal/app/service"
+	"github.com/eachinchung/e-service/internal/app/storage"
 	"github.com/eachinchung/e-service/internal/app/store"
 	"github.com/eachinchung/e-service/internal/app/store/model"
 	"github.com/eachinchung/e-service/internal/pkg/code"
@@ -32,7 +33,7 @@ func GetEnforcerOr(opts *options.CasbinOptions) (*casbin.Enforcer, error) {
 
 	once.Do(func() {
 		s := store.Client()
-		srv := service.NewService(s)
+		srv := service.NewService(s, storage.Client())
 
 		if a, err = adapter.NewAdapterByDB(s.DB()); err != nil {
 			return
@@ -44,9 +45,9 @@ func GetEnforcerOr(opts *options.CasbinOptions) (*casbin.Enforcer, error) {
 			return
 		}
 
-		enforcer.AddFunction("isSuperUser", func(arguments ...interface{}) (interface{}, error) {
+		enforcer.AddFunction("isSuperUser", func(arguments ...any) (any, error) {
 			rSub := arguments[0].(string)
-			return srv.SuperUser().Exist(context.Background(), rSub)
+			return srv.SuperUser().Exists(context.Background(), rSub)
 		})
 	})
 
@@ -60,9 +61,9 @@ func GetEnforcerOr(opts *options.CasbinOptions) (*casbin.Enforcer, error) {
 func RBACMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		claims := auth.ExtractClaimsFromContext(c)
-		username := claims["sub"].(string)
-		srv := service.NewService(store.Client())
-		user, err := srv.Users().GetByUsername(c, username)
+		eid := claims["sub"].(string)
+		srv := service.NewService(store.Client(), storage.Client())
+		user, err := srv.Users().GetByEID(c, eid)
 		if err != nil {
 			log.L(c).Errorf("获取用户信息失败: %+v", err)
 			core.WriteResponse(
@@ -85,7 +86,7 @@ func RBACMiddleWare() gin.HandlerFunc {
 			return
 		}
 
-		ok, err := Enforce(c, user.Username, c.Request.URL.Path, c.Request.Method)
+		ok, err := Enforce(c, user.EID, c.Request.URL.Path, c.Request.Method)
 		if err != nil {
 			log.L(c).Errorf("获取用户权限失败: %+v", err)
 			core.WriteResponse(
@@ -98,7 +99,7 @@ func RBACMiddleWare() gin.HandlerFunc {
 		}
 
 		if !ok {
-			log.L(c).Warnf("用户 %s 没有权限: %+v", user.Username, c.Request.URL.Path)
+			log.L(c).Warnf("用户 %s 没有权限: %+v", user.EID, c.Request.URL.Path)
 			core.WriteResponse(
 				c,
 				nil,
@@ -113,7 +114,7 @@ func RBACMiddleWare() gin.HandlerFunc {
 }
 
 //goland:noinspection SpellCheckingInspection
-func Enforce(ctx context.Context, user interface{}, permission ...interface{}) (bool, error) {
+func Enforce(ctx context.Context, user any, permission ...any) (bool, error) {
 	ok, err := enforcer.Enforce(joinSlice(user, permission...)...)
 	if err != nil {
 		return false, errors.Wrap(err, "获取用户权限失败")
@@ -157,9 +158,9 @@ func HasPermissionForUser(ctx context.Context, user string, permission ...string
 	return ok
 }
 
-// joinSlice joins an interface{} and a slice into a new slice.
-func joinSlice(a interface{}, b ...interface{}) []interface{} {
-	res := make([]interface{}, 0, len(b)+1)
+// joinSlice joins an any and a slice into a new slice.
+func joinSlice(a any, b ...any) []any {
+	res := make([]any, 0, len(b)+1)
 
 	res = append(res, a)
 	res = append(res, b...)

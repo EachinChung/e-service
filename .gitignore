@@ -17,6 +17,11 @@ _output/
 # Output of the Air
 tmp
 
+# config files
+/configs/
+!/configs/init.sql
+!/configs/model.conf
+
 # Custom
 .idea/
 .vscode/

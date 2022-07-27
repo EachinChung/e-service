@@ -14,11 +14,11 @@ import (
 )
 
 type getUri struct {
-	Username string `uri:"username" binding:"required"`
+	EID string `uri:"eid" binding:"required"`
 }
 
-// Get get a user by the user identifier.
-func (u *Controller) Get(c *gin.Context) {
+// GetByEID get a user by the user identifier.
+func (u *Controller) GetByEID(c *gin.Context) {
 	uri := &getUri{}
 	if err := c.ShouldBindUri(uri); err != nil {
 		core.WriteResponse(
@@ -30,7 +30,7 @@ func (u *Controller) Get(c *gin.Context) {
 	}
 
 	user := model.ExtractUsersFromContext(c)
-	ok, err := casbin.Enforce(c, user.Username, "admin:user", "get")
+	ok, err := casbin.Enforce(c, user.EID, "admin:user", "get")
 	if err != nil {
 		log.Errorf("get user error: %+v", err)
 		core.WriteResponse(c, nil, core.WithError(errors.Code(code.ErrDatabase, err.Error())))
@@ -38,7 +38,7 @@ func (u *Controller) Get(c *gin.Context) {
 	}
 
 	if !ok {
-		if user.Username != uri.Username {
+		if user.EID != uri.EID {
 			core.WriteResponse(c, nil, core.WithError(errors.Code(code.ErrPermissionDenied, "无权获取此用户")))
 			return
 		}
@@ -47,11 +47,11 @@ func (u *Controller) Get(c *gin.Context) {
 		return
 	}
 
-	user, err = u.srv.Users().GetByUsername(c, uri.Username)
+	user, err = u.srv.Users().GetByEIDUnscoped(c, uri.EID)
 	if err != nil {
 		log.Errorf("get user error: %+v", err)
 		core.WriteResponse(c, nil, core.WithError(err))
 		return
 	}
-	core.WriteResponse(c, user.Map())
+	core.WriteResponse(c, user.AdminResponse())
 }

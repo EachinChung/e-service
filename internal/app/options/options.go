@@ -12,16 +12,18 @@ import (
 )
 
 type Options struct {
-	GenericServerRunOptions *options.ServerRunOptions    `json:"server"      mapstructure:"server"`
-	PostgresOptions         *baseoptions.PostgresOptions `json:"postgres"    mapstructure:"postgres"`
-	RedisOptions            *baseoptions.RedisOptions    `json:"redis"       mapstructure:"redis"`
-	JWTOptions              *baseoptions.JWTOptions      `json:"jwt"         mapstructure:"jwt"`
-	CasbinOptions           *baseoptions.CasbinOptions   `json:"casbin"      mapstructure:"casbin"`
-	LogOptions              *log.Options                 `json:"log"         mapstructure:"log"`
+	GenericServerRunOptions *options.ServerRunOptions    `json:"server"        mapstructure:"server"`
+	TencentCloudOptions     *options.TencentCloudOptions `json:"tencent-cloud" mapstructure:"tencentcloud"`
+	PostgresOptions         *baseoptions.PostgresOptions `json:"postgres"      mapstructure:"postgres"`
+	RedisOptions            *baseoptions.RedisOptions    `json:"redis"         mapstructure:"redis"`
+	JWTOptions              *baseoptions.JWTOptions      `json:"jwt"           mapstructure:"jwt"`
+	CasbinOptions           *baseoptions.CasbinOptions   `json:"casbin"        mapstructure:"casbin"`
+	LogOptions              *log.Options                 `json:"log"           mapstructure:"log"`
 }
 
 func (o Options) Flags() (fss flag.NamedFlagSets) {
 	o.GenericServerRunOptions.AddFlags(fss.FlagSet("server"))
+	o.TencentCloudOptions.AddFlags(fss.FlagSet("tencent-cloud"))
 	o.PostgresOptions.AddFlags(fss.FlagSet("postgres"))
 	o.RedisOptions.AddFlags(fss.FlagSet("rides"))
 	o.JWTOptions.AddFlags(fss.FlagSet("jwt"))
@@ -35,6 +37,7 @@ func (o *Options) Validate() []error {
 	var errs []error
 
 	errs = append(errs, o.GenericServerRunOptions.Validate()...)
+	errs = append(errs, o.TencentCloudOptions.Validate()...)
 	errs = append(errs, o.PostgresOptions.Validate()...)
 	errs = append(errs, o.RedisOptions.Validate()...)
 	errs = append(errs, o.JWTOptions.Validate()...)
@@ -47,6 +50,7 @@ func (o *Options) Validate() []error {
 func NewOptions() *Options {
 	return &Options{
 		GenericServerRunOptions: options.NewServerRunOptions(),
+		TencentCloudOptions:     options.NewTencentCloudOptions(),
 		PostgresOptions:         baseoptions.NewPostgresOptions(),
 		RedisOptions:            baseoptions.NewRedisOptions(),
 		JWTOptions:              baseoptions.NewJWTOptions(),

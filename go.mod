@@ -4,14 +4,15 @@ go 1.18
 
 require (
 	github.com/casbin/casbin/v2 v2.51.0
-	github.com/casbin/gorm-adapter/v3 v3.7.3
-	github.com/eachinchung/component-base v0.3.0
+	github.com/casbin/gorm-adapter/v3 v3.7.4
+	github.com/eachinchung/component-base v0.5.0
 	github.com/eachinchung/errors v1.5.0
-	github.com/eachinchung/log v1.2.1
+	github.com/eachinchung/log v1.3.2
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.10.0
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/novalagung/gubrak/v2 v2.0.1
 	github.com/spf13/pflag v1.0.5
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
@@ -22,8 +23,10 @@ require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/deckarep/golang-set v1.8.0 // indirect
 	github.com/denisenkom/go-mssqldb v0.12.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gin-contrib/cors v1.4.0 // indirect
@@ -64,6 +67,8 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
+	github.com/sony/sonyflake v1.0.0 // indirect
+	github.com/speps/go-hashids/v2 v2.0.1 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/cobra v1.5.0 // indirect

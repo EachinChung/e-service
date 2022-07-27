@@ -44,12 +44,12 @@ func (u user) Delete(ctx context.Context, db *gorm.DB, user *model.Users, opts .
 	return nil
 }
 
-func (u user) Get(ctx context.Context, db *gorm.DB, key interface{}, opts ...options.Opt) (*model.Users, error) {
+func (u user) Get(ctx context.Context, db *gorm.DB, key any, opts ...options.Opt) (*model.Users, error) {
 	o := &options.Option{
 		Unscoped: false,
 		Where: options.Where{
-			Query: "username = ?",
-			Args:  []interface{}{key},
+			Query: "eid = ?",
+			Args:  []any{key},
 		},
 	}
 
