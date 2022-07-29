@@ -89,6 +89,58 @@ func (r *redisStorage) GetBool(ctx context.Context, key string) (bool, error) {
 	return val, err
 }
 
+func (r *redisStorage) GetInt(ctx context.Context, key string) (int, error) {
+	log.L(ctx).Debugf("[STORE] GET int key is: %s", key)
+
+	val, err := r.client.Get(ctx, key).Int()
+	switch {
+	case err == redis.Nil:
+		return val, ErrKeyNotFound
+	case err != nil:
+		log.L(ctx).Errorf("[STORE] GET int key is: %s, err: %+v", key, err)
+		return val, err
+	}
+	return val, err
+}
+
+func (r *redisStorage) GetInt64(ctx context.Context, key string) (int64, error) {
+	log.L(ctx).Debugf("[STORE] GET int64 key is: %s", key)
+
+	val, err := r.client.Get(ctx, key).Int64()
+	switch {
+	case err == redis.Nil:
+		return val, ErrKeyNotFound
+	case err != nil:
+		log.L(ctx).Errorf("[STORE] GET int64 key is: %s, err: %+v", key, err)
+		return val, err
+	}
+	return val, err
+}
+
+func (r *redisStorage) GetUint64(ctx context.Context, key string) (uint64, error) {
+	log.L(ctx).Debugf("[STORE] GET uint64 key is: %s", key)
+
+	val, err := r.client.Get(ctx, key).Uint64()
+	switch {
+	case err == redis.Nil:
+		return val, ErrKeyNotFound
+	case err != nil:
+		log.L(ctx).Errorf("[STORE] GET uint64 key is: %s, err: %+v", key, err)
+		return val, err
+	}
+	return val, err
+}
+
+func (r *redisStorage) Incr(ctx context.Context, key string) (int64, error) {
+	log.L(ctx).Debugf("[STORE] INCR key is: %s", key)
+	val, err := r.client.Incr(ctx, key).Result()
+	if err != nil {
+		log.L(ctx).Errorf("[STORE] INCR key is: %s, err: %+v", key, err)
+		return val, err
+	}
+	return val, err
+}
+
 func (r *redisStorage) HSet(ctx context.Context, key string, values ...any) error {
 	log.L(ctx).Debugf("[STORE] HSET key is: %s", key)
 	err := r.client.HSet(ctx, key, values...).Err()

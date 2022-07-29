@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/eachinchung/e-service/internal/app/validator"
 	"github.com/gin-gonic/gin"
 
 	"github.com/eachinchung/component-base/auth"
@@ -11,7 +12,6 @@ import (
 
 	"github.com/eachinchung/e-service/internal/app/store/model"
 	"github.com/eachinchung/e-service/internal/pkg/code"
-	"github.com/eachinchung/e-service/internal/pkg/validator"
 )
 
 type createBody struct {

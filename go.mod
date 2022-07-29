@@ -15,6 +15,8 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/novalagung/gubrak/v2 v2.0.1
 	github.com/spf13/pflag v1.0.5
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/captcha v1.0.451
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.451
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	gorm.io/gorm v1.23.8
 )
@@ -96,3 +98,5 @@ require (
 	modernc.org/memory v1.0.7 // indirect
 	modernc.org/sqlite v1.16.0 // indirect
 )
+
+replace github.com/eachinchung/component-base => /Users/eachin/GolandProjects/component-base

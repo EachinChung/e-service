@@ -89,10 +89,6 @@ github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f h1:lO4WD4F/r
 github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f/go.mod h1:cuUVRXasLTGF7a8hSLbxyZXjz+1KgoB3wDUb6vlszIc=
 github.com/dnaeon/go-vcr v1.2.0/go.mod h1:R4UdLID7HZT3taECzJs4YgbbH6PIGXB6W/sc5OLb6RQ=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
-github.com/eachinchung/component-base v0.4.0 h1:7d9jz6P/MpRADW+EQ7/IZOmqP3QSkPuYnBipZrcD+5s=
-github.com/eachinchung/component-base v0.4.0/go.mod h1:HTlu4ffn8thpoQSsBaen966Wik9iWtlXW9LbECLMt7s=
-github.com/eachinchung/component-base v0.5.0 h1:/opbcoxtsF02CaPgbFr3BdYI1v2kpYMbSpcC8e04wfw=
-github.com/eachinchung/component-base v0.5.0/go.mod h1:HTlu4ffn8thpoQSsBaen966Wik9iWtlXW9LbECLMt7s=
 github.com/eachinchung/errors v1.5.0 h1:HJ5QyLu6ND+yLX3NCCUl8KYPlwnbKnGzUKRuc6x9Vys=
 github.com/eachinchung/errors v1.5.0/go.mod h1:nLS7l2ModvzFDp4et718+QaFJpvBFvXeajQ2cGQfbCg=
 github.com/eachinchung/log v1.3.2 h1:k41ohifmn5dJamwVH9RYDkuy+jq2/1+bkpZm3kQW7hg=
@@ -396,6 +392,10 @@ github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PK
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/subosito/gotenv v1.3.0 h1:mjC+YW8QpAdXibNi+vNWgzmgBH4+5l5dCXv8cNysBLI=
 github.com/subosito/gotenv v1.3.0/go.mod h1:YzJjq/33h7nrwdY+iHMhEOEEbW0ovIz0tB6t6PwAXzs=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/captcha v1.0.451 h1:VjLxx23RhRWvs0PICJGaonknwyQtBz4aidyh0PCNQF0=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/captcha v1.0.451/go.mod h1:Dh4VzUca2huugCgkI67B2chQ+so/koy07+3hSCpcxKY=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.451 h1:xfsecxoWG58YGoZyLODaMKvFeuUiI3WHmHe2Yl5Ris0=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.451/go.mod h1:7sCQWVkxcsR38nffDW057DRGk8mUjK1Ing/EFOK8s8Y=
 github.com/ugorji/go v1.2.7/go.mod h1:nF9osbDWLy6bDVv/Rtoh6QgnvNDpmCalQV5urGCCS6M=
 github.com/ugorji/go/codec v1.2.7 h1:YPXUKf7fYbp/y8xloBqZOw2qaVggbfwMlI8WM3wZUJ0=
 github.com/ugorji/go/codec v1.2.7/go.mod h1:WGN1fab3R1fzQlVQTkfxVtIBhWDRqOviHU95kRgeqEY=

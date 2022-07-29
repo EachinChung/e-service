@@ -7,8 +7,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/eachinchung/e-service/internal/pkg/casbin"
-
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/zh"
 	ut "github.com/go-playground/universal-translator"
@@ -16,6 +14,7 @@ import (
 	zhTranslations "github.com/go-playground/validator/v10/translations/zh"
 
 	"github.com/eachinchung/component-base/verification"
+	"github.com/eachinchung/e-service/internal/app/store/casbin"
 )
 
 var Trans ut.Translator

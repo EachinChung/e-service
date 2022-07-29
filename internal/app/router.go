@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/eachinchung/e-service/internal/app/store/casbin"
 	"github.com/gin-gonic/gin"
 
 	"github.com/eachinchung/component-base/core"
@@ -9,7 +10,6 @@ import (
 	"github.com/eachinchung/e-service/internal/app/controller/v1/user"
 	"github.com/eachinchung/e-service/internal/app/storage"
 	"github.com/eachinchung/e-service/internal/app/store/postgres"
-	"github.com/eachinchung/e-service/internal/pkg/casbin"
 	"github.com/eachinchung/e-service/internal/pkg/code"
 )
 

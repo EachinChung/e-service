@@ -54,6 +54,9 @@ const (
 
 	// ErrFailedAuthentication - 401: 用户名或密码不正确.
 	ErrFailedAuthentication
+
+	// ErrNeedCaptcha - 401: 需要验证码.
+	ErrNeedCaptcha
 )
 
 // common: database errors.

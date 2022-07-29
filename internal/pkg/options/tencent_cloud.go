@@ -6,16 +6,13 @@ import (
 
 // TencentCloudOptions jwt 配置选项
 type TencentCloudOptions struct {
-	CaptchaAppID        string `json:"captcha-app-id"          mapstructure:"captcha-app-id"`
+	CaptchaAppID        uint64 `json:"captcha-app-id"          mapstructure:"captcha-app-id"`
 	CaptchaAppSecretKey string `json:"captcha-app-secret-key"  mapstructure:"captcha-app-secret-key"`
 }
 
 // NewTencentCloudOptions 创建一个带有默认参数的 TencentCloudOptions 对象。
 func NewTencentCloudOptions() *TencentCloudOptions {
-	return &TencentCloudOptions{
-		CaptchaAppID:        "CaptchaAppID",
-		CaptchaAppSecretKey: "CaptchaAppSecretKey",
-	}
+	return &TencentCloudOptions{}
 }
 
 // Validate 验证选项字段。
@@ -29,7 +26,7 @@ func (s *TencentCloudOptions) AddFlags(fs *pflag.FlagSet) {
 		return
 	}
 
-	fs.StringVar(
+	fs.Uint64Var(
 		&s.CaptchaAppID,
 		"tencent-cloud.captcha-app-id",
 		s.CaptchaAppID,

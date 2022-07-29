@@ -15,6 +15,10 @@ type Storage interface {
 	Get(ctx context.Context, key string) (string, error)
 	Set(ctx context.Context, key string, value any, expiration time.Duration) error
 	GetBool(ctx context.Context, key string) (bool, error)
+	GetInt(ctx context.Context, key string) (int, error)
+	GetInt64(ctx context.Context, key string) (int64, error)
+	GetUint64(ctx context.Context, key string) (uint64, error)
+	Incr(ctx context.Context, key string) (int64, error)
 
 	HSet(ctx context.Context, key string, values ...any) error
 	HSetAllWithExpire(ctx context.Context, key string, model any, expiration time.Duration) error

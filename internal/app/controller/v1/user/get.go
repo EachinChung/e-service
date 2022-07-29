@@ -1,6 +1,8 @@
 package user
 
 import (
+	"github.com/eachinchung/e-service/internal/app/store/casbin"
+	"github.com/eachinchung/e-service/internal/app/validator"
 	"github.com/gin-gonic/gin"
 
 	"github.com/eachinchung/component-base/core"
@@ -8,9 +10,7 @@ import (
 	"github.com/eachinchung/log"
 
 	"github.com/eachinchung/e-service/internal/app/store/model"
-	"github.com/eachinchung/e-service/internal/pkg/casbin"
 	"github.com/eachinchung/e-service/internal/pkg/code"
-	"github.com/eachinchung/e-service/internal/pkg/validator"
 )
 
 type getUri struct {

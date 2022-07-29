@@ -13,7 +13,7 @@ import (
 
 type Options struct {
 	GenericServerRunOptions *options.ServerRunOptions    `json:"server"        mapstructure:"server"`
-	TencentCloudOptions     *options.TencentCloudOptions `json:"tencent-cloud" mapstructure:"tencentcloud"`
+	TencentCloudOptions     *options.TencentCloudOptions `json:"tencent-cloud" mapstructure:"tencent-cloud"`
 	PostgresOptions         *baseoptions.PostgresOptions `json:"postgres"      mapstructure:"postgres"`
 	RedisOptions            *baseoptions.RedisOptions    `json:"redis"         mapstructure:"redis"`
 	JWTOptions              *baseoptions.JWTOptions      `json:"jwt"           mapstructure:"jwt"`

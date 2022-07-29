@@ -19,6 +19,7 @@ func init() {
 	register(ErrEmptyToken, 401, "没有携带 token")
 	register(ErrInvalidSigningAlgorithm, 400, "无效签名算法")
 	register(ErrFailedAuthentication, 401, "用户名或密码不正确")
+	register(ErrNeedCaptcha, 401, "需要验证码")
 	register(ErrDatabase, 500, "数据库错误")
 	register(ErrUserAlreadyExist, 400, "用户已存在")
 	register(ErrUserNotExist, 404, "用户不存在")
