@@ -3,6 +3,8 @@ package app
 import (
 	"github.com/eachinchung/component-base/shutdown"
 	"github.com/eachinchung/component-base/shutdown/managers"
+	"github.com/eachinchung/log"
+
 	"github.com/eachinchung/e-service/internal/app/config"
 	"github.com/eachinchung/e-service/internal/app/storage"
 	"github.com/eachinchung/e-service/internal/app/store"
@@ -10,7 +12,6 @@ import (
 	"github.com/eachinchung/e-service/internal/app/store/postgres"
 	"github.com/eachinchung/e-service/internal/app/validator"
 	"github.com/eachinchung/e-service/internal/pkg/server"
-	"github.com/eachinchung/log"
 )
 
 type apiServer struct {

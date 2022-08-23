@@ -1,16 +1,15 @@
 package user
 
 import (
-	"github.com/eachinchung/e-service/internal/app/validator"
-	"github.com/gin-gonic/gin"
-
 	"github.com/eachinchung/component-base/auth"
 	"github.com/eachinchung/component-base/core"
 	"github.com/eachinchung/component-base/utils/idutil"
 	"github.com/eachinchung/errors"
 	"github.com/eachinchung/log"
+	"github.com/gin-gonic/gin"
 
 	"github.com/eachinchung/e-service/internal/app/store/model"
+	"github.com/eachinchung/e-service/internal/app/validator"
 	"github.com/eachinchung/e-service/internal/pkg/code"
 )
 

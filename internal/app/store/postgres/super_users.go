@@ -3,11 +3,11 @@ package postgres
 import (
 	"context"
 
-	"github.com/eachinchung/e-service/internal/app/store/model"
 	"github.com/eachinchung/errors"
+	"gorm.io/gorm"
 
 	"github.com/eachinchung/e-service/internal/app/store"
-	"gorm.io/gorm"
+	"github.com/eachinchung/e-service/internal/app/store/model"
 )
 
 type superUser struct{}

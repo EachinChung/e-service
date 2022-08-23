@@ -8,11 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-redis/redis/v8"
-
 	"github.com/eachinchung/component-base/options"
 	"github.com/eachinchung/errors"
 	"github.com/eachinchung/log"
+	"github.com/go-redis/redis/v8"
 )
 
 var (
@@ -138,7 +137,7 @@ func (r *redisStorage) Incr(ctx context.Context, key string) (int64, error) {
 		log.L(ctx).Errorf("[STORE] INCR key is: %s, err: %+v", key, err)
 		return val, err
 	}
-	return val, err
+	return val, nil
 }
 
 func (r *redisStorage) HSet(ctx context.Context, key string, values ...any) error {

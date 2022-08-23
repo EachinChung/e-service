@@ -3,10 +3,9 @@ package postgres
 import (
 	"context"
 
-	"gorm.io/gorm"
-
 	"github.com/eachinchung/component-base/db/options"
 	"github.com/eachinchung/errors"
+	"gorm.io/gorm"
 
 	"github.com/eachinchung/e-service/internal/app/store"
 	"github.com/eachinchung/e-service/internal/app/store/model"

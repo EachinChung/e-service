@@ -4,11 +4,8 @@ package code
 
 // Common: basic errors.
 const (
-	// ErrSuccess - 200: success.
-	ErrSuccess int = iota + 100001
-
 	// ErrUnknown - 500: 服务器内部错误.
-	ErrUnknown
+	ErrUnknown int = iota + 100001
 
 	// ErrValidation - 400: 参数验证失败.
 	ErrValidation
@@ -19,44 +16,35 @@ const (
 
 // common: 授权和身份验证错误。
 const (
-	// ErrTokenInvalid - 401: Token 不合法.
-	ErrTokenInvalid int = iota + 100101
-
-	// ErrInvalidAuthHeader - 401: Authorization 不合法.
-	ErrInvalidAuthHeader
-
-	// ErrMissingAuthHeader - 401: Authorization 是空的.
-	ErrMissingAuthHeader
-
-	// ErrUsernameOrPasswordIncorrect - 401: 账号或密码错误.
-	ErrUsernameOrPasswordIncorrect
-
 	// ErrPermissionDenied - 403: 没有权限.
-	ErrPermissionDenied
+	ErrPermissionDenied int = iota + 100101
 
-	// ErrFailedTokenCreation - 401: token 创建失败.
+	// ErrNeedCaptcha - 403: 请验证您不是机器人.
+	ErrNeedCaptcha
+
+	// ErrCaptchaVerifyFailed - 400: 验证码校验失败.
+	ErrCaptchaVerifyFailed
+
+	// ErrCaptchaBusy - 500: 验证码服务繁忙, 请稍后再试.
+	ErrCaptchaBusy
+
+	// ErrFailedTokenCreation - 500: token 创建失败.
 	ErrFailedTokenCreation
-
-	// ErrExpiredToken - 401: token 已过期, 无法刷新.
-	ErrExpiredToken
-
-	// ErrMissingExpField - 400: 缺少 exp 字段.
-	ErrMissingExpField
-
-	// ErrWrongFormatOfExp - 400: exp 必须是 float64 格式.
-	ErrWrongFormatOfExp
 
 	// ErrEmptyToken - 401: 没有携带 token.
 	ErrEmptyToken
 
-	// ErrInvalidSigningAlgorithm - 400: 无效签名算法.
-	ErrInvalidSigningAlgorithm
+	// ErrInvalidToken - 401: Token 无效.
+	ErrInvalidToken
 
-	// ErrFailedAuthentication - 401: 用户名或密码不正确.
+	// ErrExpiredToken - 401: token 已过期.
+	ErrExpiredToken
+
+	// ErrFailedAuthentication - 400: 账号或密码不正确.
 	ErrFailedAuthentication
 
-	// ErrNeedCaptcha - 401: 需要验证码.
-	ErrNeedCaptcha
+	// ErrNetworkUnsafe - 403: 网络环境不安全.
+	ErrNetworkUnsafe
 )
 
 // common: database errors.

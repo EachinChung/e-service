@@ -4,12 +4,10 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/gin-gonic/gin"
-
-	"gorm.io/gorm"
-
 	"github.com/eachinchung/component-base/auth"
 	"github.com/eachinchung/errors"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 const ctxKey = "USER"

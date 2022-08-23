@@ -13,7 +13,7 @@ import (
 
 type Options struct {
 	GenericServerRunOptions *options.ServerRunOptions    `json:"server"        mapstructure:"server"`
-	TencentCloudOptions     *options.TencentCloudOptions `json:"tencent-cloud" mapstructure:"tencent-cloud"`
+	CaptchaOptions          *options.CaptchaOptions      `json:"captcha"       mapstructure:"captcha"`
 	PostgresOptions         *baseoptions.PostgresOptions `json:"postgres"      mapstructure:"postgres"`
 	RedisOptions            *baseoptions.RedisOptions    `json:"redis"         mapstructure:"redis"`
 	JWTOptions              *baseoptions.JWTOptions      `json:"jwt"           mapstructure:"jwt"`
@@ -23,7 +23,7 @@ type Options struct {
 
 func (o Options) Flags() (fss flag.NamedFlagSets) {
 	o.GenericServerRunOptions.AddFlags(fss.FlagSet("server"))
-	o.TencentCloudOptions.AddFlags(fss.FlagSet("tencent-cloud"))
+	o.CaptchaOptions.AddFlags(fss.FlagSet("captcha"))
 	o.PostgresOptions.AddFlags(fss.FlagSet("postgres"))
 	o.RedisOptions.AddFlags(fss.FlagSet("rides"))
 	o.JWTOptions.AddFlags(fss.FlagSet("jwt"))
@@ -37,7 +37,7 @@ func (o *Options) Validate() []error {
 	var errs []error
 
 	errs = append(errs, o.GenericServerRunOptions.Validate()...)
-	errs = append(errs, o.TencentCloudOptions.Validate()...)
+	errs = append(errs, o.CaptchaOptions.Validate()...)
 	errs = append(errs, o.PostgresOptions.Validate()...)
 	errs = append(errs, o.RedisOptions.Validate()...)
 	errs = append(errs, o.JWTOptions.Validate()...)
@@ -50,7 +50,7 @@ func (o *Options) Validate() []error {
 func NewOptions() *Options {
 	return &Options{
 		GenericServerRunOptions: options.NewServerRunOptions(),
-		TencentCloudOptions:     options.NewTencentCloudOptions(),
+		CaptchaOptions:          options.NewCaptchaOptions(),
 		PostgresOptions:         baseoptions.NewPostgresOptions(),
 		RedisOptions:            baseoptions.NewRedisOptions(),
 		JWTOptions:              baseoptions.NewJWTOptions(),

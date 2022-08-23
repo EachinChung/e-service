@@ -1,14 +1,13 @@
 package app
 
 import (
-	"github.com/eachinchung/e-service/internal/app/store/casbin"
-	"github.com/gin-gonic/gin"
-
 	"github.com/eachinchung/component-base/core"
 	"github.com/eachinchung/errors"
+	"github.com/gin-gonic/gin"
 
 	"github.com/eachinchung/e-service/internal/app/controller/v1/user"
 	"github.com/eachinchung/e-service/internal/app/storage"
+	"github.com/eachinchung/e-service/internal/app/store/casbin"
 	"github.com/eachinchung/e-service/internal/app/store/postgres"
 	"github.com/eachinchung/e-service/internal/pkg/code"
 )
@@ -38,8 +37,9 @@ func installController(g *gin.Engine) {
 		{
 			userController := user.NewController(storeIns, storageIns)
 
-			users.Use(jwtStrategy.MiddlewareFunc(), casbin.RBACMiddleWare())
 			users.POST("", userController.Create)
+
+			users.Use(jwtStrategy.MiddlewareFunc(), casbin.RBACMiddleWare())
 			users.GET(":eid", userController.GetByEID)
 		}
 	}

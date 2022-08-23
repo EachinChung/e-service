@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	"gorm.io/gorm"
-
 	"github.com/eachinchung/component-base/options"
 	"github.com/eachinchung/errors"
+	"gorm.io/gorm"
 
 	"github.com/eachinchung/e-service/internal/app/store"
 )

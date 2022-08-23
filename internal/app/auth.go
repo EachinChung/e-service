@@ -1,14 +1,8 @@
 package app
 
 import (
-	"fmt"
-	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/eachinchung/e-service/internal/app/validator"
-
-	"github.com/gin-gonic/gin"
 
 	"github.com/eachinchung/component-base/core"
 	"github.com/eachinchung/component-base/db/options"
@@ -17,11 +11,14 @@ import (
 	"github.com/eachinchung/component-base/verification"
 	"github.com/eachinchung/errors"
 	"github.com/eachinchung/log"
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 
 	"github.com/eachinchung/e-service/internal/app/config"
-	"github.com/eachinchung/e-service/internal/app/storage"
+	"github.com/eachinchung/e-service/internal/app/middleware"
 	"github.com/eachinchung/e-service/internal/app/store"
 	"github.com/eachinchung/e-service/internal/app/store/model"
+	"github.com/eachinchung/e-service/internal/app/validator"
 	"github.com/eachinchung/e-service/internal/pkg/code"
 )
 
@@ -34,16 +31,13 @@ const (
 )
 
 type loginInfo struct {
-	Username  string  `form:"username" json:"username" binding:"required,max=20"`
-	Password  string  `form:"password" json:"password" binding:"required"`
-	Ticket    *string `form:"ticket" json:"ticket" binding:"omitempty"`
-	RandStr   *string `form:"rand_str" json:"rand_str" binding:"omitempty"`
-	Signature *string `form:"signature" json:"signature" binding:"omitempty"`
+	Username string `form:"username" json:"username" binding:"required,max=20"`
+	Password string `form:"password" json:"password" binding:"required"`
 }
 
-type needCaptchaRsp struct {
-	Signature    string `json:"signature"`
-	CaptchaAppID string `json:"captcha_app_id"`
+type tokenRsp struct {
+	Token  string    `json:"token"`
+	Expire time.Time `json:"expire"`
 }
 
 func newJWTAuth() *auth.GinJWTMiddleware {
@@ -73,25 +67,14 @@ func authenticator() func(ctx *gin.Context) (any, error) {
 		var user *model.Users
 		var err error
 
-		if err := c.ShouldBindJSON(&login); err != nil {
+		if err := c.ShouldBindBodyWith(&login, binding.JSON); err != nil {
 			c.Set("VALIDATION_ERROR", validator.ParseValidationError(err))
 			return nil, auth.ErrMissingLoginValues
 		}
 
-		rdb := storage.Client()
-		cKey := fmt.Sprintf(storage.KeyLoginIP, c.ClientIP())
-
-		numberOfVisits, err := rdb.Incr(c, cKey)
-		log.Errorf("%s: %s", cKey, numberOfVisits)
-		if err == nil && numberOfVisits > 10 {
-			_ = rdb.Expire(c, cKey, time.Hour)
-
-			if login.RandStr == nil || login.Ticket == nil || login.Signature == nil {
-				c.Set("NEED_CAPTCHA", login.Username)
-				return nil, errors.Code(code.ErrNeedCaptcha, "需要验证码")
-			}
-
-			// TODO: check captcha
+		err = middleware.WaterWall(c, "login:"+c.ClientIP())
+		if err != nil {
+			return nil, err
 		}
 
 		db := store.Client().DB()
@@ -106,7 +89,6 @@ func authenticator() func(ctx *gin.Context) (any, error) {
 
 		if err != nil {
 			log.Errorf("get user information failed: %s", err.Error())
-
 			return "", auth.ErrFailedAuthentication
 		}
 
@@ -119,19 +101,13 @@ func authenticator() func(ctx *gin.Context) (any, error) {
 
 func refreshResponse() func(c *gin.Context, _ int, token string, expire time.Time) {
 	return func(c *gin.Context, _ int, token string, expire time.Time) {
-		c.JSON(http.StatusOK, gin.H{
-			"token":  token,
-			"expire": expire.Format(time.RFC3339),
-		})
+		core.WriteResponse(c, tokenRsp{token, expire})
 	}
 }
 
 func loginResponse() func(c *gin.Context, _ int, token string, expire time.Time) {
 	return func(c *gin.Context, _ int, token string, expire time.Time) {
-		c.JSON(http.StatusOK, gin.H{
-			"token":  token,
-			"expire": expire.Format(time.RFC3339),
-		})
+		core.WriteResponse(c, tokenRsp{token, expire})
 	}
 }
 
@@ -153,21 +129,47 @@ func unauthorized() func(c *gin.Context, _ int, err error) {
 	return func(c *gin.Context, _ int, err error) {
 		var errCode int
 
+		coder := errors.ParseCoder(err)
+		if coder.Code() != 1 {
+			if errors.IsCode(err, code.ErrNeedCaptcha) {
+				cfg := config.GetConfigIns(nil).CaptchaOptions
+				sign := idutil.GetInstanceID(idutil.GenUint64ID(), "")
+
+				if err := middleware.SetCaptchaInfo(c, sign, cfg.AppID, cfg.AppSecretKey, "login:"+c.ClientIP(), time.Minute*10); err != nil {
+					core.WriteResponse(c, nil, core.WithError(err), core.WithAbort())
+					return
+				}
+
+				core.WriteResponse(
+					c,
+					middleware.NeedCaptchaRsp{
+						Signature:    sign,
+						CaptchaAppID: strconv.FormatUint(cfg.AppID, 10),
+					},
+					core.WithError(err), core.WithAbort(),
+				)
+				return
+			}
+
+			core.WriteResponse(c, nil, core.WithError(err), core.WithAbort())
+			return
+		}
+
 		switch err {
 		case auth.ErrFailedTokenCreation:
 			errCode = code.ErrFailedTokenCreation
 		case auth.ErrExpiredToken:
 			errCode = code.ErrExpiredToken
-		case auth.ErrMissingExpField:
-			errCode = code.ErrMissingExpField
-		case auth.ErrWrongFormatOfExp:
-			errCode = code.ErrWrongFormatOfExp
-		case auth.ErrInvalidAuthHeader:
-			errCode = code.ErrInvalidAuthHeader
-		case auth.ErrInvalidSigningAlgorithm:
-			errCode = code.ErrInvalidSigningAlgorithm
 		case auth.ErrFailedAuthentication:
 			errCode = code.ErrFailedAuthentication
+
+		case auth.ErrEmptyAuthHeader, auth.ErrEmptyParamToken, auth.ErrEmptyQueryToken:
+			errCode = code.ErrEmptyToken
+
+		case auth.ErrMissingExpField, auth.ErrWrongFormatOfExp, auth.ErrInvalidAuthHeader, auth.ErrInvalidSigningAlgorithm:
+			log.Debugf("token 无效, err: %s", err.Error())
+			errCode = code.ErrInvalidToken
+
 		case auth.ErrMissingLoginValues:
 			errCode = code.ErrValidation
 			validationErr, exists := c.Get("VALIDATION_ERROR")
@@ -176,35 +178,12 @@ func unauthorized() func(c *gin.Context, _ int, err error) {
 					c,
 					validationErr,
 					core.WithError(errors.Code(code.ErrValidation, err.Error())),
+					core.WithAbort(),
 				)
 				return
 			}
-		case auth.ErrEmptyAuthHeader, auth.ErrEmptyParamToken, auth.ErrEmptyQueryToken:
-			errCode = code.ErrEmptyToken
 		}
 
-		if errors.IsCode(err, code.ErrNeedCaptcha) {
-			cfg := config.GetConfigIns(nil)
-			sign := idutil.GetInstanceID(idutil.GenUint64ID(), "")
-
-			rdb := storage.Client()
-			cKey := fmt.Sprintf(storage.KeyLoginSign, sign)
-			username, _ := c.Get("NEED_CAPTCHA")
-			if err := rdb.Set(c, cKey, username, time.Minute*5); err != nil {
-				core.WriteResponse(c, nil, core.WithError(errors.Code(code.ErrDatabase, err.Error())), core.WithAbort())
-				return
-			}
-
-			core.WriteResponse(
-				c,
-				needCaptchaRsp{
-					Signature:    sign,
-					CaptchaAppID: strconv.FormatUint(cfg.TencentCloudOptions.CaptchaAppID, 10),
-				},
-				core.WithError(err), core.WithAbort(),
-			)
-			return
-		}
 		core.WriteResponse(c, nil, core.WithError(errors.Code(errCode, err.Error())), core.WithAbort())
 	}
 }
